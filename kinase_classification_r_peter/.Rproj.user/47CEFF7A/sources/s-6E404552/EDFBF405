@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1509432322922.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1049784625",
+    "id" : "EDFBF405",
+    "lastKnownWriteTime" : 1509476160,
+    "last_content_update" : 1509476160275,
+    "path" : "~/Dropbox (Schlessinger lab)/Schlessinger lab Team Folder/shared/1_kinase_family/scripts/kinase_classification_r_peter/kinase_dfg_chelix_analysis.171030.R",
+    "project_path" : "kinase_dfg_chelix_analysis.171030.R",
+    "properties" : {
+        "cursorPosition" : "109,0",
+        "scrollLine" : "96"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

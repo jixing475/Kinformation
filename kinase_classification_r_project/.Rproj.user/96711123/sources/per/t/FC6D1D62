@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1502731327552.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "65814964",
+    "id" : "FC6D1D62",
+    "lastKnownWriteTime" : 1502815004,
+    "last_content_update" : 1502815004,
+    "path" : "C:/Users/rayees/Dropbox (Schlessinger lab)/Schlessinger lab Team Folder/shared/1_kinase_family/scripts/kinase_dfg_chelix_analysis.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "105,0",
+        "scrollLine" : "83"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

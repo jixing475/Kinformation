@@ -1,0 +1,83 @@
+meta = read.table("../../stdy_kinase.xtal.complete.170601.csv", sep  = ",", header = T)
+fam = read.table("../../kinasecom.uniprot.families.2.csv", sep =",", header = F )
+head(fam)
+colnames(fam) = c("row", "uni_id", 3:ncol(fam))
+for ( i in 1:nrow(meta))
+{
+  rw = meta[i,]
+  id = as.character(rw$uni_id)
+  fami =as.character(fam[which(fam$uni_id == id),]$`9`)
+  if ( length(fami) > 0) 
+  {
+    meta[i,25] = fami 
+  }
+  else 
+  {
+    meta[i,25] = "Family_Not_Found"
+  }
+}
+meta$Row.names = paste(meta$pdb_id, meta$pdb_ch_id , sep = "_")
+full.data.lig.kinase.fam = full.data.lig
+for ( i in 1:nrow(full.data.lig.kinase.fam))
+{
+  rw = full.data.lig.kinase.fam[i,]
+  pdb = as.character(rw$Row.names)
+  kfam = as.character(meta[meta$Row.names == pdb, ]$V25)
+  if ( length(kfam) > 0 )
+  {
+    full.data.lig.kinase.fam[i,21] = kfam[1]
+  }
+  else
+  {
+    full.data.lig.kinase.fam[i,21] = "Family_Not_Found"
+  }
+}
+
+lig.fam = full.data.lig.kinase.fam[,c(20,21)]
+lig.fam.counted = as.data.frame(table(lig.fam))
+lig.fam.counted.wide = spread(lig.fam.counted, key = V21, value = Freq, fill = 0 )
+ligand.family.dominant.class = data.frame()
+for (i in 1:nrow(lig.fam.counted.wide ))
+{
+  rw = lig.fam.counted.wide [i,]
+  ligand = as.character(rw$Ligand)
+  rw$Ligand = NULL
+  tot = sum(rw)
+  if (tot == 0)
+  {
+    next ;
+  }
+  cols = colnames(rw)
+  for (ii in 1:ncol(rw))
+  {
+    freq = rw[,ii] / tot 
+    n = cols[ii]
+    if ( freq > 0.5 )
+    {
+      row = as.data.frame(t(as.data.frame(c(ligand, n, freq))))
+      ligand.family.dominant.class  = as.data.frame(rbind(ligand.family.dominant.class , row))
+    }
+    else 
+    {
+      #row = as.data.frame(t(as.data.frame(c(ligand, "nonspecific" , freq))))
+      #ligand.dominant.class  = as.data.frame(rbind(ligand.dominant.class , row))
+    }
+  }
+}
+tani.sig.kfam = tani.sig
+for ( i in 1:nrow(tani.sig.kfam))
+{
+  rw = tani.sig.kfam[i,]
+  lig = rw$V2 
+  class = as.character(ligand.family.dominant.class[which(ligand.family.dominant.class$V1 == lig),2])
+  if ( length(class) == 0)
+  {
+    tani.sig.kfam[i,5] = "NonSpecific" 
+  }
+  else 
+  {
+    tani.sig.kfam[i,5] = class 
+    print(paste(lig, class, sep = " "))
+  }
+}
+write.table(tani.sig.kfam, file = "../tani.sig.distance.csv" ,sep = ",", quote = F, eol =  "\n", row.names = F )

@@ -1,0 +1,37 @@
+REFPDB  1atp.pdb
+
+HELIX	HTLNEKRIL	# [Ref C-Helix | 5,7,9-Resid center on Glu, E91]
+NDOM	AMKIL	# [Ref N-lobe (Lys) 5-Resid] K72
+CDOM	VTDFG	# [Ref N-lobe (Lys) 5-Resid] D184
+RSPINE1 VKLEF   # L106
+RSPINE2 RILQA   # L95
+RSPINE3 TDFGF   # F185
+RSPINE4 LIYRD   # Y164
+CSPINE1 HYAMK   # A70
+CSPINE2 NLLID   # L173
+CSPINE3 ENLLI   # L172
+CSPINE4 GEMFS   # M128
+CSPINE5 YEMAA   # M231
+# CSPINE6 GRVML   # V57   *outside of linearity
+# CSPINE6 LLIDQ   # I174  *
+# CSPINE7 GVLIY   # L227  *
+GATE	MVMEY	# M120
+
+FASTA	stdy_kinase.clean_3.170714.tcoffee_1d.fasta
+
+PDBDIR	/home/pmung/xxx_data/1_kinase/1_family/1_stkinase/170109/2_align
+#,/home/pmung/xxx_data/1_kinase/1_family/2_ykinase/170109/2_align
+
+# All kinase PDB in PDBDIR
+PDBLIST	align_pdb.stdy-kinase.list
+
+# Partial list of kinase PDB in PDBDIR
+#PDBLIST        x_known_c-in_d-out.txt
+#PDBLIST        x_known_c-in_d-in.txt
+#PDBLIST        x_known_c-out_d-in.txt
+#PDBLIST        x_known_c-in_d-out.txt
+#PDBLIST        x_known_c-out_d-out.txt
+#PDBLIST        badones.input.list
+#PDBLIST        reallybadones.input.list
+
+MISSING	/home/pmung/xxx_data/1_kinase/1_family/1_stkinase/170109/3_result/stdy_kinase.param.170825.missing.root.txt

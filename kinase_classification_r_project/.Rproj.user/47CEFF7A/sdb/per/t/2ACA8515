@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "##generates box/violin plot of features \n##supplemental figure 1 \nlibrary(tidyverse)\nlibrary(readxl)\nlibrary(clusterSim)\nlibrary(randomForest)\nlibrary(ggplot2)\nlibrary(ggthemes)\nlibrary(plotly)\n##set seed for randomforest \nset.seed(10)\n##read data \ndat = as.data.frame(read_excel(\"../../1_manual_classes/stdy_kinase.param.170829.xlsx\",sheet = 1,col_names = T ))\n#get training data and relevant data columns \ndat.2 = data.matrix(dat[2:265,c(6,7,8,9,10,11,12,13,15,16,23,24,33,34,35)])\n##impute missing data \ndat.2.impute = as.data.frame(rfImpute(\n  x = dat.2,\n  y = as.factor(dat$Group[2:265]) ,\n  ntree = 1000))\ndat.2.impute$y = NULL\n##normalize data to fit -1 to 1  \ndat.2.scaled = data.Normalization(dat.2.impute,type = \"n5\", normalization = \"column\" )\n##add classes to normalized data \ndat.2.scaled$clust = dat$Group[2:265]\n##add pdb id to normalized data \nrow.names(dat.2.scaled) = dat$pdb_id[2:265]\n##format data for ggplot \ndat.2.scaled.split = split(dat.2.scaled, f = dat.2.scaled$clust)\ncomplete.df = data.frame()\nfor (i in dat.2.scaled.split) \n{\n    c = unique(as.character(i$clust))\n    i$clust = NULL\n    i.st = stack(i)\n    i.st$clust = rep(c, nrow(i.st))\n    complete.df.l = as.data.frame(rbind(complete.df, i.st))\n    complete.df = complete.df.l\n}\n##fill colors for classes \ncolors = c(\"#CAF270\",\"#73D487\",\"#30B096\",\"#40607A\", \"#453B52\")\n##plot box/violin plot \n\ncolors = c(\"#443333\",\"#cc5522\",\"#00ccff\",\"#AA96DA\", \"grey50\")\nggplot(complete.df, aes(clust , values, fill = clust))  + geom_boxplot() + geom_violin(color = \"lightgrey\",scale = \"width\", trim =T, alpha = .8)  +  scale_fill_manual(values =  colors ) +  facet_wrap(~ind)  + theme_light(base_size = 20) + ylim(-1.1,1.1)  + theme(legend.position = \"none\", strip.text = element_text(colour = 'black', size = 15) , axis.title.x = element_blank() , strip.background = element_rect(fill = \"grey\",colour = \"lightgrey\"), axis.text = element_text(size = 15)) + ylab(label = \"Normalized Score\")\nplot(p)\n ##interactive figure \nggplotly(p)\n       ",
+    "created" : 1507875014338.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1486182770",
+    "id" : "2ACA8515",
+    "lastKnownWriteTime" : 1504309615,
+    "last_content_update" : 1504309615,
+    "path" : "~/Dropbox (Schlessinger lab)/Schlessinger lab Team Folder/shared/1_kinase_family/scripts/kinase_classification_r_project/create_box_plot.R",
+    "project_path" : "create_box_plot.R",
+    "properties" : {
+    },
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

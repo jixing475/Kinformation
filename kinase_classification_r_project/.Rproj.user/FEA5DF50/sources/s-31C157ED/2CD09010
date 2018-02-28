@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1504027095061.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "2CD09010",
+    "lastKnownWriteTime" : 1507921463,
+    "last_content_update" : 1507921463803,
+    "path" : "C:/Users/rayee/Dropbox (Schlessinger lab)/Schlessinger lab Team Folder/shared/1_kinase_family/scripts/kinase_classification_r_project/train_random_forest.R",
+    "project_path" : "train_random_forest.R",
+    "properties" : {
+        "cursorPosition" : "112,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

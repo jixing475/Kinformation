@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "###splits full.data into apo and ligand bound sets\n\nsource(\"train_random_forest.R\")\nlibrary(tidyverse)\nlibrary(plyr)\n\nmeta = read.table(\"../../stdy_kinase.xtal.complete.170601.csv\", header = T, sep =\",\")\nmeta.ligand =meta[which(meta$ligand!=\"NaN\"),]\nmeta.apo = meta[which(meta$ligand==\"NaN\"),]\nfull.data$row.names = row.names(full.data)\nfull.data[1,18] = \"1ATP_A\"\nfull.data$pdb = ldply(strsplit(full.data$row.names, \"_\"))$V1\n\nfull.data.ligand = full.data[which(full.data$pdb %in% meta.ligand$pdb_id),]\nfull.data.apo = full.data[which(full.data$pdb %in% meta.apo$pdb_id),]\nfull.data.ligand$type = rep(\"ligand\", nrow(full.data.ligand))\nfull.data.apo$type = rep(\"apo\", nrow(full.data.apo))\nfull.data.2 = as.data.frame(rbind(full.data.apo, full.data.ligand))\nhead(full.data)\n\nwrite.table(full.data.ligand, \"../../2_predicted_classes/8.29.17.predicted+verified.ligand.csv\" , quote =F, eol = \"\\n\" ,col.names = T  )\nwrite.table(full.data.apo, \"../../2_predicted_classes/8.29.17.predicted+verified.apo.csv\" , quote =F, eol = \"\\n\" ,col.names = T  )\n",
+    "created" : 1507875011754.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "134161138",
+    "id" : "55D7C03C",
+    "lastKnownWriteTime" : 1504976624,
+    "last_content_update" : 1504976624,
+    "path" : "~/Dropbox (Schlessinger lab)/Schlessinger lab Team Folder/shared/1_kinase_family/scripts/kinase_classification_r_project/get_apo_proteins.R",
+    "project_path" : "get_apo_proteins.R",
+    "properties" : {
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

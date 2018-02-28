@@ -1,0 +1,9 @@
+C(c1nnc2ncc(c3ccc(F)cc3)nn12)(F)(F)c1ccc2c(cccn2)c1	5EOB_5QQ_A_met
+n12c(nnc1ccc(c1ccc(cc1)F)n2)Sc1cc2c(cc1)nc([nH]2)NC(=O)OC	5HNI_63B_X_met
+c1cc(ccc1c1ccc2nnc(n2n1)Sc1ccc2c(c1)sc(n2)NC(=O)NCCN1CCOCC1)F	5HO6_63K_A_met
+C(CNc1nc2c(cc(n3cnc4cnc5cnc(cc5c34)c3ccccc3)cc2)s1)N1CCOCC1	5IU2_6DA_A_map3k8
+n12c(nnc1CNc1c3ncc(OC)cc3ncc1)ccc(c1ccccc1)n2	3I5N_B2D_A_met
+n1c(c2ccccc2)ccc2nnc(COc3c4c(cc(cc4)OC)ncc3)n12	3CD8_L5G_A_met
+n12c(nnc1Cc1ccc(cc1)O)ccc(c1ccccc1)n2	3CCN_LKG_A_met
+c1cc(c2cnn(C)c2)nn2c1nnc2Sc1cc2c(cc1)nccc2	3DKF_SX8_A_met
+c12ncccc2cc(cc1)[C@@H](c1n2nc(c3cnn(c3)C)ccc2nn1)C	3ZC5_W9Z_A_met

@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1504040820840.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "2073A52F",
+    "lastKnownWriteTime" : 1504820269,
+    "last_content_update" : 1504820269995,
+    "path" : "C:/Users/rayee/Dropbox (Schlessinger lab)/Schlessinger lab Team Folder/shared/1_kinase_family/scripts/kinase_classification_r_project/generate_ROC_curves.R",
+    "project_path" : "generate_ROC_curves.R",
+    "properties" : {
+        "cursorPosition" : "16,14",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

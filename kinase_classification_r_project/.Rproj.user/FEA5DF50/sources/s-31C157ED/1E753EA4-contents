@@ -1,0 +1,72 @@
+###manually define subclusters in data 
+source("get_apo_proteins.R")
+library(ggExtra)
+library(ggplot2)
+full.data.2$pdb_id = row.names(full.data.2)
+
+full.data.px.vec  = merge(full.data.2, dat.rel.col[,c(1,4,5)], by = "pdb_id" ) 
+head(full.data.px.vec)
+colors = c("#443333","#cc5522","#00ccff","#AA96DA", "grey50")
+codisubclusters = ggplot(full.data.px.vec[which(full.data.px.vec$V15=="codi"),], aes(p1p1x.y , p2p2x.y))  + geom_point(size = 20, alpha =.9, color = "#30B096") + ggtitle("codi subclusters")   + theme_light(base_size = 20)  +   ylim(0,1) + theme(legend.position = "none") 
+ggMarginal(codisubclusters,type = "histogram",  binwidth = .01 , size = 6)
+
+cidisubclusters = ggplot(full.data.px.vec[which(full.data.px.vec$V15=="cidi"),], aes(p1p1x.y , p2p2x.y))  + geom_point(size =20, alpha =.9, color = "#443333") + ggtitle("cidi subclusters")   + theme_light(base_size = 20)  +  ylim(0,1) + theme(legend.position = "none")   +  theme_bw(base_size = 20) + theme(axis.title = element_blank(), axis.text = element_text(size = 60), panel.border = element_rect(colour = "black", fill=NA, size=1.5) , legend.text = element_text(size = 60), legend.position = "none")
+ggMarginal(cidisubclusters,type = "histogram",  size = 6, binwidth = .1)
+
+cidosubclusters = ggplot(full.data.px.vec[which(full.data.px.vec$V15=="cido"),], aes(p1p1x.y , p2p2x.y))  + geom_point(size =20, alpha =.9, color = "#cc5522") + ggtitle("cido subclusters")   + theme_light(base_size = 20)  +  ylim(-1,0) + xlim(-1,0) + theme(legend.position = "none") +  theme_bw(base_size = 20) + theme(axis.title = element_blank(), axis.text = element_text(size = 60), panel.border = element_rect(colour = "black", fill=NA, size=1.5) , legend.text = element_text(size = 60), legend.position = "none")
+
+ggMarginal(cidosubclusters,type = "histogram",  size = 6, binwidth = .01)
++ geom_hline(yintercept = .63) + geom_vline(xintercept = .5)
+
+codosubclusters = ggplot(full.data.px.vec[which(full.data.px.vec$V15=="codo"),], aes(p1p1x.y , p2p2x.y))  + geom_point(size = 20, alpha =.9, color = "#AA96DA") + ggtitle("codo subclusters")   + theme_light(base_size = 20) +  ylim(-1,0) + xlim(-1,0) + theme(legend.position = "none")  +  theme_bw(base_size = 20) + theme(axis.title = element_blank(), axis.text = element_text(size = 60), panel.border = element_rect(colour = "black", fill=NA, size=1.5) , legend.text = element_text(size = 60), legend.position = "none")
+ggMarginal(codosubclusters,type = "histogram",  size = 6, binwidth = .01)
++ geom_hline(yintercept = .63) + geom_vline(xintercept = .5)
+
+othersubclusters = ggplot(full.data.px.vec[which(full.data.px.vec$V15=="other"),], aes(p1p1x.y , p2p2x.y))  + geom_point(size = 20, alpha =.9, color = "grey50") + ggtitle("other subclusters")   + theme_light(base_size = 20)  + ylim(-1,1) + theme(legend.position = "none") +  theme_bw(base_size = 20) + theme(axis.title = element_blank(), axis.text = element_text(size = 60), panel.border = element_rect(colour = "black", fill=NA, size=1.5) , legend.text = element_text(size = 60), legend.position = "none")
+ggMarginal(othersubclusters,type = "histogram",  size = 6, binwidth = .01)
++ geom_hline(yintercept = .63) + geom_vline(xintercept = .5)
+
+codi = full.data.2[which(full.data.2$V15 == "codi"), ]
+head(codi)
+codi[which(codi$p2p2x >= .63 & codi$p1p1x < .5), 21] = 1
+codi[which(codi$p2p2x < .63 & codi$p1p1x < .5), 21 ] = 2
+codi[which(codi$p2p2x >= .63 & codi$p1p1x >= .5), 21 ] = 3
+codi[which(codi$p2p2x < .63 & codi$p1p1x >= .5), 21 ] = 4
+clus =kmeans(codi[,c(1:2)], centers = 3 )
+codi$cl = clus$cluster
+ggplot(codi, aes(codi$p1p1x, codi$p2p2x, color = factor(codi$cl))) + geom_point(size = 20, alpha = .9)  + geom_abline(slope = 0 , intercept = 0, size = 1.5) +  theme_bw(base_size = 20) + theme(axis.title = element_blank(), axis.text = element_text(size = 60), panel.border = element_rect(colour = "black", fill=NA, size=1.5) , legend.text = element_text(size = 60), legend.position = "none")
+ggMarginal(p,type = "histogram",  size = 6, binwidth = .01)
+codi[which(codi$cl==1),23] = (codi[which(codi$cl==1),1] - 0.8259137 )^2 + (codi[which(codi$cl==1),2] - 0.8423546 )^2
+codi[which(codi$cl==2),23] = (codi[which(codi$cl==2),1] - 0.2676688 )^2 + (codi[which(codi$cl==2),2] - 0.4816065 )^2
+codi[which(codi$cl==3),23] = (codi[which(codi$cl==3),1] - 0.2701360 )^2 + (codi[which(codi$cl==3),2] - 0.7902117 )^2
+codi.dist = codi$V23 
+codi$distance_from_center = codi.dist
+codi$V23 = NULL
+codi.sub = codi$cl
+codi$subclusters = codi$cl
+codi$cl = NULL
+write.table(codi, "../../2_predicted_classes/9.1.17.codi_subclusters.csv",quote = F, row.names = T, col.names = T, sep = "," )
+
+clus$centers
+
+library(ggplot2) 
+codi.2 = codi[,c(1:13)]
+head(codi.2)
+ggplot(stack(codi.2), aes(ind, values)) + geom_boxplot()
+head(codi)
+
+phipsi = dat[2:nrow(dat),c(2,21,22)]
+phipsi = phipsi[complete.cases(phipsi),]
+row.names(phipsi) = phipsi$pdb_id.1
+full.data.phi = merge(full.data.2, phipsi, by = 0 )
+ggplot(full.data.phi, aes(h_phi, h_psi, color = factor(toupper(V15)))) + 
+  scale_color_manual(values = colors) +
+  geom_point(size = 20, alpha = .7) + 
+  geom_abline(slope = 0 , intercept = 0, size = 1.5) + 
+  theme_bw(base_size = 20) + 
+  theme(axis.text = element_text(size = 60), panel.border = element_rect(colour = "black", fill=NA, size=1.5) , legend.text = element_text(size = 60))
+
+
+
+
+

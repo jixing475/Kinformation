@@ -1,0 +1,106 @@
+### generates training model for DFG and C-Helix prediction 
+### Generates variables: 
+#### training.dfg.rf to train dfg model  
+#### training.chelix.rf to train chelix model based on data + dfg classification
+#### test.chelix.predictions final prediction 
+#### predictions in : /2_predicted_classes/8.29.17.predicted.chelix.dfg.conformation.csv"
+#### and 2_predicted_classes/8.29.17.predicted+verified.chelix.dfg.conformation.csv
+library(tidyverse)
+library(randomForest)
+library(plotly)
+library(clusterSim)
+## set seed for randomforest 
+set.seed(42)
+
+## read data
+dat = as.data.frame(read_excel("../../1_manual_classes/stdy_kinase.param.171009.2.xlsx",sheet = 1,col_names = T ))
+#dat = read.table("../../1_manual_classes/stdy_kinase.param.171009.264anno.csv",header =T, sep ="," )
+
+## get relevant columns 
+#dat.rel.col = dat[,c(1,4,5,6,7,8,9,10,11,12,13,14,15,16,17,30,33)]
+dat.rel.col = dat[,c(1,4,5,7,8,11,12,13,18,19,21,22,36)]
+
+#### partition and format test/training data ####
+training = dat.rel.col[c(1,3:265),] ## row 1 is duplcate of row 2 
+row.names(training) = training$pdb_id
+training.class = as.factor(as.character(training$Group))
+## get DFG status from $dfg_group
+training.dfg = training$dfg_group
+## remove the pdb_id and pregenerated classification info registered in row and dfg and class
+training[,c(1,2,3)] = NULL
+
+## partition the test set, manually ignore 95 bad structures
+test = rbind(dat.rel.col[266:326,], dat.rel.col[422:nrow(dat.rel.col),])
+row.names(test) = test$pdb_id
+test[,c(1,2,3)] = NULL
+## remove row with NA lose about 139 cases 
+#test.complete = test[complete.cases(test),]
+test.complete = test
+
+## impute missing training data using c-helix class 
+training.impute = rfImpute(x = training, y = training.class ,   ntree = 1000)
+training.impute$training.class = NULL
+
+## normalize data to 0
+combined.data = as.data.frame(rbind(training.impute, test.complete))
+combined.n = data.Normalization(combined.data,type = "n5", normalization = "column" )
+training.n = combined.n[1:264,]
+test.n = combined.n[265:nrow(combined.n),]
+## fix dfg stat values
+training.dfg.2 = c()
+for (i in 1:length(training.class)) {
+  if (training.class[i] == "other")
+  { training.dfg.2[i] = 3 }
+  else
+  { g = substr(training.class[i], 3, 5 )
+    if (g == "di") {
+      training.dfg.2[i] = 1 }
+    else {
+      training.dfg.2[i] = 0 }
+  } }
+
+training.dfg.2 = as.factor(training.dfg.2)
+
+### train DFG classifier 
+training.dfg.rf = randomForest( training.dfg.2 ~., data=training.n, 
+                                ntree = 1000)
+## train Chelix classifer 
+training.n.dfg = training.n
+training.n.dfg$dfg = training.dfg.2 ##add dfg data to data 
+training.chelix.rf = randomForest( training.class ~., data=training.n.dfg, 
+                                   ntree = 1000)
+
+## predict test classes 
+test.pred.dfg = as.data.frame(predict(object = training.dfg.rf, newdata = test.n, type = "prob"))
+test.pred.dfg.2 = test.n
+for (i in 1:nrow(test.pred.dfg))  {
+  col = (which.max(test.pred.dfg[i,]))
+  dfgstat = as.numeric(row.names(as.data.frame(col)))
+  test.pred.dfg.2[i, 14] = dfgstat  } 
+
+test.dfg =  test.pred.dfg.2$V14
+test.pred.dfg.2$dfg  = test.dfg
+test.pred.dfg.2$V14 = NULL
+test.pred.dfg.2$dfg = as.factor(test.pred.dfg.2$dfg)
+test.chelix.pred = as.data.frame(predict( object = training.chelix.rf, newdata =  test.pred.dfg.2, type = "prob"))
+
+test.chelix.predictions = test.pred.dfg.2
+
+## assign class to rows based on class with max probablity 
+for ( i in 1:nrow(test.chelix.pred))  {
+  col = which.max(test.chelix.pred[i,])
+  test.chelix.predictions[i,15] =  as.character(row.names(as.data.frame(col)))
+  test.chelix.predictions[i,16] = as.numeric(test.chelix.pred[i,col])    }
+
+write.table(x = test.chelix.predictions, file = "../../2_predicted_classes/8.29.17.predicted.chelix.dfg.conformation.csv",  sep =",", quote = F, eol = "\n", row.names = T, col.names = T )
+
+
+head(test.chelix.predictions)
+head(training)
+training.n$dfg = training.dfg.2
+training.n$V15 = training.class
+training.n$V16 = rep(1, nrow(training))
+full.data = as.data.frame(rbind(training.n,test.chelix.predictions))
+source = c(rep("training",nrow(training)),rep("test",nrow(test.chelix.predictions)))
+full.data$source = source
+write.table(x = full.data, file = "../../2_predicted_classes/8.29.17.predicted+verified.chelix.dfg.conformation.csv" ,      sep =",", quote = F, eol = "\n", row.names = T, col.names = T )

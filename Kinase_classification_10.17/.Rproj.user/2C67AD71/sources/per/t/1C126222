@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1519319906007.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3920081223",
+    "id" : "1C126222",
+    "lastKnownWriteTime" : 1519320165,
+    "last_content_update" : 1519320165125,
+    "path" : "C:/Users/Ray/Dropbox (Schlessinger lab)/Schlessinger lab Team Folder/shared/1_kinase_family/scripts/kinase_classification_r_project/create_box_plot.2.22.18.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "1,51",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

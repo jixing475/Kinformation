@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1506374104759.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "CCF8C1F8",
+    "lastKnownWriteTime" : 1512433992,
+    "last_content_update" : 1512433992266,
+    "path" : "C:/Users/rayee/Dropbox (Schlessinger lab)/Schlessinger lab Team Folder/shared/1_kinase_family/scripts/kinase_classification_r_project/tanimoto.analyze.R",
+    "project_path" : "tanimoto.analyze.R",
+    "properties" : {
+        "cursorPosition" : "90,5",
+        "scrollLine" : "78",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

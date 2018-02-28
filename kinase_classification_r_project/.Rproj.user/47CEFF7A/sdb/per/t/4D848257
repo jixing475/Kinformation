@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "tani = read.table(\"../kinase_metrics.v5/../../pdb.ligands.smi.tanimoto.fp.txt.uniq.cases\", sep = \",\", header = F)\nlig = read.table(\"../../pdb.ligand.smi.csv.complete.cases\", sep = \",\", header = F)\nlibrary(qgraph)\nlibrary(tidyr)\nlig$V4= NULL\nlig$V3= NULL\ncolnames(lig) = c(\"Row.names\", \"Ligand\")\nfull.data.lig = merge(full.data, lig, by = \"Row.names\")\nlig.conf = full.data.lig[,c(20,19)]\nhead(lig.conf)\nlig.conf.counted = as.data.frame(table(lig.conf))\nlig.conf.counted.wide = spread(lig.conf.counted, V18 ,value =  Freq , fill = 0 )\nligand.dominant.class = data.frame()\nfor (i in 1:nrow(lig.conf.counted.wide))\n{\n  rw = lig.conf.counted.wide[i,]\n  ligand = as.character(rw$Ligand)\n  rw$Ligand = NULL\n  tot = sum(rw)\n  if (tot == 0)\n  {\n    next ;\n  }\n  cols = colnames(rw)\n  for (ii in 1:ncol(rw))\n  {\n   freq = rw[,ii] / tot \n   n = cols[ii]\n    if ( freq > 0.5 )\n   {\n      \n     row = as.data.frame(t(as.data.frame(c(ligand, n, freq))))\n     ligand.dominant.class  = as.data.frame(rbind(ligand.dominant.class , row))\n    }\n   else \n   {\n     #row = as.data.frame(t(as.data.frame(c(ligand, \"nonspecific\" , freq))))\n     #ligand.dominant.class  = as.data.frame(rbind(ligand.dominant.class , row))\n   }\n  }\n}\n\nhead(full.data.lig)\ntani$weight = (tani$V3 *1.2) + (tani$V4*1.2) + (tani$V5 *.6) \ntani$z = (tani$weight - mean(tani$weight))/ sd(tani$weight)\ntani$p = pnorm(-abs(tani$z))\ntani$padj = p.adjust(tani$p, method = \"fdr\", n = length(tani$p))\ntani.sig = tani[which(tani$padj < .05 ), ]\ntani.sig = tani.sig[which(tani.sig$weight > mean(tani$weight)) ,]\nlibrary(qgraph)\nlibrary(tidyr)\ntani.sig.full = tani.sig\ntani.sig[,c(3:6,8:ncol(tani.sig))] = NULL\ntani.sig$V1  = as.character(tani.sig$V1)\ntani.sig$V2 = as.character(tani.sig$V2)\n##spread to fill in missing pairs \n#tani.sig.wide = spread(data = tani.sig, key = V2 , value = V3 , fill = 0  )\n#row.names(tani.sig.wide) = tani.sig.wide$V1\n#tani.sig.wide$V1 = NULL\n#cols = colnames(tani.sig.wide)\n#tani.sig.wide$ligand1 = row.names(tani.sig.wide)\n#tani.sig.complete = gather(data = tani.sig.wide , ligand2 , distance , cols)\ncolnames(ligand.dominant.class) = c(\"ligand1\", \"struct\", \"freq\")\nfor ( i in 1:nrow(tani.sig))\n{\n  rw = tani.sig[i,]\n  lig = rw$V2 \n  class = as.character(ligand.dominant.class[which(ligand.dominant.class$ligand1 == lig),2])\n  if ( length(class) == 0)\n  {\n    tani.sig[i,4] = \"nonspecific\" \n  }\n  else \n  {\n    tani.sig[i,4] = class \n    print(paste(lig, class, sep = \" \"))\n  }\n}\nhead(tani.sig)\nqgraph(data.matrix(tani.sig), layout='spring', vsize=3)\nwrite.table(tani.sig, file = \"../tani.sig.distance.csv\" ,sep = \",\", quote = F, eol =  \"\\n\", row.names = F )\n",
+    "created" : 1507875003314.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "497980351",
+    "id" : "4D848257",
+    "lastKnownWriteTime" : 1506457311,
+    "last_content_update" : 1506457311,
+    "path" : "~/Dropbox (Schlessinger lab)/Schlessinger lab Team Folder/shared/1_kinase_family/scripts/kinase_classification_r_project/tanimoto.analyze.R",
+    "project_path" : "tanimoto.analyze.R",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1508249502280.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "A87391EC",
+    "lastKnownWriteTime" : 1508202089,
+    "last_content_update" : 1508202089,
+    "path" : "C:/Users/rayee/Dropbox (Schlessinger lab)/Schlessinger lab Team Folder/shared/1_kinase_family/scripts/kinase_classification_r_peter/train_random_forest_twostep.171014.R",
+    "project_path" : "train_random_forest_twostep.171014.R",
+    "properties" : {
+        "cursorPosition" : "15,95",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

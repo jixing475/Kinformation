@@ -1,0 +1,97 @@
+library(tidyverse)
+library(randomForest)
+library(plotly)
+library(clusterSim)
+set.seed(10)
+dat = read.table("../../10_gold_standard_data/stdy_kinase.param.171009.csv",header =T, sep ="," )
+##get relevant columns 
+dat.rel.col = dat[,c(1,4,6,7,8,9,10,12,13,15)]
+##partition and format test/training data 
+training = dat.rel.col[c(1,3:326),] ## row 1 is duplcate of row 2 
+row.names(training) = training$pdb_id
+training.class = as.factor(as.character(training$Group))
+
+
+
+
+training.dfg = training$dfg_st
+training[,c(1,2,3,12)] = NULL
+test = dat.rel.col[266:nrow(dat.rel.col),]
+row.names(test) = test$pdb_id
+test[,c(1,2,3,12)] = NULL
+##remove row with NA lose about 139 cases 
+test.complete = test[complete.cases(test),]
+##impute missing training data using c-helix class 
+training.impute = rfImpute(x = training, y = training.class ,   ntree = 1000)
+training.impute$training.class = NULL
+##normalize data to 0
+combined.data = as.data.frame(rbind(training.impute, test.complete))
+combined.n = data.Normalization(combined.data,type = "n5", normalization = "column" )
+training.n = combined.n[1:264,]
+test.n = combined.n[265:nrow(combined.n),]
+##fix dfg stat values
+training.dfg.2 = c()
+for (i in 1:length(training.class))
+{
+  if (training.class[i] == "other")
+  {
+    training.dfg.2[i] = 3
+  }
+  else
+  {
+    g = substr(training.class[i], 3, 5 )
+    if (g == "di") {
+      training.dfg.2[i] = 1
+    }
+    else {
+      training.dfg.2[i] = 0              
+    }
+  }
+}
+training.dfg.2 = as.factor(training.dfg.2)
+###train DFG classifier 
+training.dfg.rf = randomForest( training.dfg.2 ~., data=training.n, 
+                                ntree = 1000)
+##train Chelix classifer 
+training.n.dfg = training.n
+training.n.dfg$dfg = training.dfg.2 ##add dfg data to data 
+training.chelix.rf = randomForest( training.class ~., data=training.n.dfg, 
+                                   ntree = 1000)
+##predict test classes 
+test.pred.dfg = as.data.frame(predict(object = training.dfg.rf, newdata = test.n, type = "prob"))
+test.pred.dfg.2 = test.n
+for (i in 1:nrow(test.pred.dfg)) {
+  col = (which.max(test.pred.dfg[i,]))
+  dfgstat = as.numeric(row.names(as.data.frame(col)))
+  test.pred.dfg.2[i, 14] = dfgstat
+} 
+test.dfg =  test.pred.dfg.2$V14
+test.pred.dfg.2$dfg  = test.dfg
+test.pred.dfg.2$V14 = NULL
+test.pred.dfg.2$dfg = as.factor(test.pred.dfg.2$dfg)
+test.chelix.pred = as.data.frame(predict( object = training.chelix.rf, newdata =  test.pred.dfg.2, type = "prob"))
+
+test.chelix.predictions = test.pred.dfg.2
+
+##assign class to rows based on class with max probablity 
+for ( i in 1:nrow(test.chelix.pred))
+{
+  col = which.max(test.chelix.pred[i,])
+  test.chelix.predictions[i,15] =  as.character(row.names(as.data.frame(col)))
+  test.chelix.predictions[i,16] = as.numeric(test.chelix.pred[i,col])
+}
+
+write.table(x = test.chelix.predictions, file = "../../2_predicted_classes/8.29.17.predicted.chelix.dfg.conformation.csv",  sep =",", quote = F, eol = "\n", row.names = T, col.names = T )
+
+
+head(test.chelix.predictions)
+head(training)
+training.n$dfg = training.dfg.2
+training.n$V15 = training.class
+training.n$V16 = rep(1, nrow(training))
+full.data = as.data.frame(rbind(training.n,test.chelix.predictions))
+source = c(rep("training",nrow(training)),rep("test",nrow(test.chelix.predictions)))
+full.data$source = source
+write.table(x = full.data, file = "../../2_predicted_classes/8.29.17.predicted+verified.chelix.dfg.conformation.csv" ,      sep =",", quote = F, eol = "\n", row.names = T, col.names = T )
+
+

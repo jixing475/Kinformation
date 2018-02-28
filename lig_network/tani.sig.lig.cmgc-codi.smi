@@ -1,0 +1,13 @@
+c1(Nc2nc(c(s2)C(=O)c2cccnc2)N)ccc(cc1)C(=O)N	3RK7_08Z_A_cdk2
+c1(c(nc(s1)NC1CCCCC1)N)C(=O)c1cnccc1	3RKB_12Z_A_cdk2
+n1c(N)c(C(=O)c2ccccc2)sc1Nc1cc(ccc1)S(=O)(=O)N	3RNI_21Z_A_cdk2
+c1c(cc(cc1)C(=O)c1sc(nc1N)Nc1ccccc1)C(F)(F)F	3RPR_25Z_A_cdk2
+n1c(N)c(C(=O)c2cccc(N)c2)sc1Nc1ccc(cc1)S(=O)(=O)N	3RPV_26Z_A_cdk2
+COc1ccc(cc1)C(=O)c1s/c(=N\c2ccc(OC)cc2)/[nH]c1N	2IZR_BRK_A_cdkg3
+n1c(N)c(C(=O)c2ccccc2)sc1Nc1ccccc1	3QTR_X36_A_cdk2
+n1c(N)c(C(=O)c2cnccc2)sc1Nc1ccccc1	3QTW_X3A_A_cdk2
+n1c(N)c(C(=O)c2ccc(cc2)S(=O)(=O)N)sc1Nc1ccc(cc1)S(=O)(=O)N	3QTU_X44_A_cdk2
+n1c(N)c(C(=O)Nc2cccc(c2)F)sc1Nc1ccc(cc1)S(=O)(=O)N	3R9D_X6B_A_cdk2
+Clc1sc(C(=O)c2c(nc(s2)NCC=C)N)cc1	3S00_Z60_A_cdk2
+1c(N)c(C(=O)c2ccncc2)sc1NCC=C	3R8Z_Z63_A_cdk2
+NC(=O)c1sc(Nc2ccccc2)nc1N	3RZB_02Z_A_cdk2-type1

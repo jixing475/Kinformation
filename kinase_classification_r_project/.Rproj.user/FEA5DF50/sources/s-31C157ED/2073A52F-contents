@@ -1,0 +1,115 @@
+###Generates ROC curves of training data 
+source("./train_random_forest.R")
+library(ggthemes)
+library(pracma)
+actual_class.dfg = training.dfg.2
+actual_class.chelix = training.class
+thresholds = seq(0,1,by=.001) ### 1000 threshold values
+chelixpred = training.chelix.rf$votes
+dfgpred = training.dfg.rf$votes
+####confusionmatrix 
+###       Tact | Fact
+## Tpred   TP | FP 
+## Fpred   FN | TN 
+roc_data = function(pred,class,threshold,type)
+{
+  tpr.all =c()
+  fpr.all =c()
+  for ( i in threshold)
+  {
+    TP = 0 
+    FN = 0 
+    FP = 0
+    TN = 0
+    for (ii in 1:length(pred )) 
+    {
+        prob = pred[ii] 
+        act = class[ii]
+        if (prob >=  i )
+        {
+          if (act == type )
+          {
+              TP = TP +1  ;        
+          }
+          else 
+          {
+              FP = FP +1  ;
+          }
+        }
+        else
+        {
+          if (act == type )
+          {
+             FN = FN + 1 ;
+          }
+          else 
+          {
+             TN = TN + 1 ;
+          }
+        }
+    }
+    tpr = TP/(TP + FN )
+    fpr = FP / (FP + TN )
+    tpr.all = c(tpr.all, tpr)
+    fpr.all = c(fpr.all, fpr)
+  }
+  roc = as.data.frame(cbind(fpr.all,tpr.all))
+  type = rep(type,nrow(roc))
+  roc$type = type
+  return(roc)
+}
+###Chelix ROC
+r = roc_data(chelixpred[,1], actual_class.chelix, thresholds, "cidi")
+r2 = roc_data(chelixpred[,2], actual_class.chelix, thresholds, "cido")
+r3 = roc_data(chelixpred[,3], actual_class.chelix, thresholds, "codi")
+r4 = roc_data(chelixpred[,4], actual_class.chelix, thresholds, "codo")
+r5 = roc_data(chelixpred[,5], actual_class.chelix, thresholds, "other")
+
+r.auc = abs(trapz(r$fpr.all, r$tpr.all))
+r2.auc = abs(trapz(r2$fpr.all, r2$tpr.all))
+r3.auc = abs(trapz(r3$fpr.all, r3$tpr.all))
+r4.auc = abs(trapz(r4$fpr.all, r4$tpr.all))
+r5.auc = abs(trapz(r5$fpr.all, r5$tpr.all))
+
+rall = as.data.frame(rbind(r,r2,r3,r4,r5))
+colors = c("#443333","#cc5522","#00ccff","#AA96DA", "grey50")
+
+ggplot(rall, aes(fpr.all, tpr.all, color = factor(type),  fill = factor(type))) + 
+  geom_path(size =3, color = "black") +  
+  geom_point(size = 8, alpha = 1) +
+  geom_path(size =3, color = "black") + 
+  geom_abline(intercept = 0, slope = 1, color = "red") + 
+  scale_fill_manual(values =  colors) + 
+  scale_color_manual(values =  colors) +  
+  facet_wrap(~type) + theme_light(base_size = 20) + 
+  theme(legend.position = "none", 
+        strip.text = element_text(colour = 'black', size = 60) , 
+        strip.background = element_rect(fill = "grey",colour = "lightgrey"), 
+        axis.text = element_text(size = 35)  , 
+        axis.title = element_text(size = 60)) + 
+  ylab("True Positive Rate") + xlab("False Positive Rate")
+
+###DFG ROC
+d1 = roc_data(pred = dfgpred[,1],class = actual_class.dfg , threshold =thresholds ,type = 0 )
+d2 = roc_data(pred = dfgpred[,2],class = actual_class.dfg , threshold =thresholds ,type = 1 )
+d3 = roc_data(pred = dfgpred[,3],class = actual_class.dfg , threshold =thresholds ,type = 3 )
+
+rall = as.data.frame(rbind(d1,d2,d3)) 
+ggplot(rall, aes(fpr.all, tpr.all, color = factor(type),  fill = factor(type))) + 
+    geom_path(size =3, color = "black") +  
+    geom_point(size = 8, alpha = 1) + 
+    geom_path(size =1, color = "black") + 
+    geom_abline(intercept = 0, slope = 1, color = "red")  +  
+    facet_wrap(~type) +
+    theme_light(base_size = 20) + 
+    theme(axis.text = element_text(size = 20) , 
+          legend.position = "none", 
+          strip.text = element_text(colour = 'black', size = 50) , 
+          strip.background = element_rect(fill = "grey",colour = "lightgrey"),
+          axis.title = element_text(size = 40)) + 
+  ylab("True Positive Rate") + 
+  xlab("False Positive Rate")
+
+d1.auc = abs(trapz(d1$fpr.all, d1$tpr.all))
+d2.auc = abs(trapz(d2$fpr.all, d2$tpr.all))
+d3.auc = abs(trapz(d3$fpr.all, d3$tpr.all))

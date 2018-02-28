@@ -1,0 +1,52 @@
+source("train_random_forest.R")
+library(plotly)
+library(ggplot2)
+full.data$Row.names = row.names(full.data)
+combined.data$Row.names = row.names(combined.data) 
+full.data.px.vec = merge(full.data, combined.data, by = "Row.names")
+write.table("../full.data.px.vec.csv" , x = full.data.px.vec, quote = F, sep = ",", eol =  "\n", row.names = F )
+colors = c("#443333","#cc5522","#00ccff","#AA96DA", "grey50")
+
+ggplot(full.data.px.vec, aes(p2p2x.y , h_cgvc.y, color = factor(V19), fill = factor(V19)))  + 
+  geom_point(size = 5, alpha =1) +  
+  scale_color_manual(values = colors) + 
+  theme_light(base_size = 20) + 
+  theme( 
+        axis.text = element_text(size = 20), 
+        panel.border = element_rect(colour = "black", fill=NA, size=1.5) , 
+        legend.text = element_text(size = 20), 
+        )
+ggExtra
+
+
+
+##chelix plot 
+plot_ly(full.data.px.vec, x = ~r3r3x.x , y = ~dist_NH.x, z= ~h_scvc.x , color = ~V19, 
+           colors = colors,  mode = 'markers', text = ~paste('Id:', Row.names, '<br>Source', source)) 
+
+plot_ly(y.train, x = ~p1p1x, y = ~p2p2x, z = ~h_cgvc, color = ~Group, 
+        colors = colors,  mode = 'markers') 
+
+
+3. , text = ~paste('Id:', row.names, '<br>Probability:', V16)),   )
+colors2 = c("darkred","darkgreen","darkblue")
+##dfg plot 
+plot_ly(full.data, x = ~p1p1x , y =~p2p2x , z = ~h_cgvc , color = ~dfg, 
+         colors = colors2, mode = 'markers', 
+          text = ~paste('Id:', row.names, '<br>Class:', V15, '<br>Probability:', V16))
+ggplot(full.data.px.vec, aes(p1p1x.y , p2p2x.y, color = dfg, fill = dfg))  + geom_point(size = 20, alpha =.8) +  theme_light(base_size = 20) + theme(axis.title = element_blank(), axis.text = element_text(size = 60), panel.border = element_rect(colour = "black", fill=NA, size=1.5) , legend.text = element_text(size = 60), legend.position = "none")
+
+ggplot(full.data, aes(p1p1x , p2p2x, color = V15, fill = V15))  + geom_point(size = 20, alpha = .9) + scale_color_manual(values = colors) + geom_abline(slope = 0 , intercept = 0, size = 1.5) + geom_vline(xintercept = 0, size = 1.5 )  + theme_bw(base_size = 20) + theme(axis.title = element_blank(), axis.text = element_text(size = 20), panel.border = element_rect(colour = "black", fill=NA, size=1.5) )
+dev.off()
+ggplot(full.data, aes(p1p1x , p2p2x, color = toupper(V15)))  + geom_point(size = 20, alpha = .9) + scale_color_manual(values = colors)  + theme_bw(base_size = 20) + theme(axis.title = element_blank(), axis.text = element_text(size = 60), panel.border = element_rect(colour = "black", fill=NA, size=1.5) , legend.text = element_text(size = 60), legend.position = "none")
+
+dfg.other = dat[,c(1,14)]
+row.names(dfg.other) = dfg.other$row.names
+colnames(dfg.other) =  c("row.names", "dfg_st")
+full.data.dfg.other = merge(full.data, dfg.other, by = 0  )
+
+ggplot(full.data.dfg.other, aes(h_cgvc , dist_CH, color = toupper(V15)))  + geom_point(size = 20, alpha = .9) + geom_abline(slope = 0 , intercept = 0, size = 1.5) + geom_vline(xintercept = 0, size = 1.5 )  + theme_bw(base_size = 20) + theme(axis.title = element_blank(), axis.text = element_text(size = 60), panel.border = element_rect(colour = "black", fill=NA, size=1.5) , legend.text = element_text(size = 60))
+
+
+
+
